@@ -31,7 +31,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 After creating build using above step, you can run the app using static server using below commands
 
-npm install -g serve
+npm install -g serve \
 serve-s build
 
 ### `npm run eject`

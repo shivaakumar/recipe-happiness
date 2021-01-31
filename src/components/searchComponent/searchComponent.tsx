@@ -20,8 +20,17 @@ class SearchComponent extends Component {
     componentDidCatch(error: any) {
         console.log('Error in searchComponent', error);
     }
+    componentDidMount () {
+        if (this.searchKey === '') {
+            document.title = 'Search Recipe';
+        } else {
+            document.title = this.searchKey;
+        }
+    }
+    componentDidUpdate () {
+        document.title = this.searchKey;
+    }
     setKeyword (event: any) {
-        console.log(event.target.value);
         this.searchKey = event.target.value;
     }
 
@@ -31,16 +40,14 @@ class SearchComponent extends Component {
             model.parseModel(data);
 
             this.recipeList.recipes = model.recipelist;
-            document.title = this.searchKey;
             this.setState({});
         }
     }
 
     addToRecentSearch () {
+        this.recentSearch.push(this.searchKey);
         if (this.recentSearch.length > 5) {
             this.recentSearch.shift();
-        } else {
-            this.recentSearch.push(this.searchKey);
         }
     }
 
@@ -50,7 +57,6 @@ class SearchComponent extends Component {
         await fetch(`https://api.edamam.com/search?app_id=900da95e&app_key=40698503668e0bb3897581f4766d77f9&q=${this.searchKey}`)
             .then(response => response.json())
             .then(data => {
-               console.log(data);
                this.loading = false;
                this.addToRecentSearch();
                this.setViewModel(data);
@@ -72,7 +78,7 @@ class SearchComponent extends Component {
                     onChange={(e) => this.setKeyword(e)}
                 />
                 <div>
-                    <button onClick={this.fetchData}>Search</button>
+                    <button disabled={this.loading} onClick={this.fetchData}>Search</button>
                 </div>
                 <div>
                     {this.recentSearch.length > 0 && <p>Last 5 search keywords</p>}
